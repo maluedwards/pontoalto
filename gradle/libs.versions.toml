@@ -14,6 +14,8 @@ room_version = "2.6.1"
 [libraries]
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version"}
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version"}
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
+room-ksp = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -33,4 +35,5 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version = "1.6.21-1.0.6" }
 

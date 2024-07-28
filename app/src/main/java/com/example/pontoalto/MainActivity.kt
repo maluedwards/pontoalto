@@ -26,8 +26,17 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.example.pontoalto.model.database.PontoAltoDatabase
+import com.example.pontoalto.model.repository.RecipeRepository
+import com.example.pontoalto.view.screens.HomeScreen
+import com.example.pontoalto.view.screens.NewRecipeScreen
+import com.example.pontoalto.view.screens.RecipesScreen
+import com.example.pontoalto.viewmodel.NewRecipeViewModel
+import com.example.pontoalto.viewmodel.NewRecipeViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,10 +52,25 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun PontoAlto() {
     val navController = rememberNavController()
+    val context = LocalContext.current
+    val db = PontoAltoDatabase.getDatabase(context)
+    val recipeDao = db.recipeDao()
+    val recipeRepository = RecipeRepository(recipeDao)
+
+    // ViewModel Factory
+    val factory = NewRecipeViewModelFactory(recipeRepository)
+    val newRecipeViewModel: NewRecipeViewModel = viewModel(factory = factory)
+
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomeScreen(navController) }
         composable("recipes") { RecipesScreen(navController) }
-
+        composable("new-recipe") {
+            NewRecipeScreen(
+                navController = navController,
+                newRecipeViewModel = newRecipeViewModel,
+                onNewRecipeSuccess = { /*TODO*/ }
+            )
+        }
     }
 }
 
@@ -68,7 +92,7 @@ fun MyHeader() {
 fun MyNavBar(
     listRecipes: Boolean,
     home: Boolean,
-    projects: Boolean,
+    newRecipe: Boolean,
     navController: NavHostController
 ){
     NavigationBar {
@@ -83,9 +107,9 @@ fun MyNavBar(
             icon = { Icon( Icons.Filled.Home, contentDescription = "Home" ) }
         )
         NavigationBarItem(
-            selected = projects,
-            onClick = { /*TODO*/ },
-            icon = { Icon( Icons.Filled.Create, contentDescription = "projects" ) }
+            selected = newRecipe,
+            onClick = { navController.navigate("new-recipe") },
+            icon = { Icon( Icons.Filled.Create, contentDescription = "New Recipe" ) }
         )
     }
 }
