@@ -32,11 +32,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.pontoalto.model.database.PontoAltoDatabase
 import com.example.pontoalto.model.repository.RecipeRepository
+import com.example.pontoalto.model.repository.StitchRowRepository
 import com.example.pontoalto.view.screens.HomeScreen
 import com.example.pontoalto.view.screens.NewRecipeScreen
 import com.example.pontoalto.view.screens.RecipesScreen
 import com.example.pontoalto.viewmodel.NewRecipeViewModel
 import com.example.pontoalto.viewmodel.NewRecipeViewModelFactory
+import com.example.pontoalto.viewmodel.NewStitchRowViewModel
+import com.example.pontoalto.viewmodel.StitchRowViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,11 +58,15 @@ fun PontoAlto() {
     val context = LocalContext.current
     val db = PontoAltoDatabase.getDatabase(context)
     val recipeDao = db.recipeDao()
+    val stitchRowDao = db.stitchRowDao()
     val recipeRepository = RecipeRepository(recipeDao)
+    val stitchRowRepository = StitchRowRepository(stitchRowDao)
 
     // ViewModel Factory
     val factory = NewRecipeViewModelFactory(recipeRepository)
     val newRecipeViewModel: NewRecipeViewModel = viewModel(factory = factory)
+    val newStitchRowViewModel: NewStitchRowViewModel = viewModel(factory = StitchRowViewModelFactory(stitchRowRepository))
+
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomeScreen(navController) }
@@ -68,6 +75,7 @@ fun PontoAlto() {
             NewRecipeScreen(
                 navController = navController,
                 newRecipeViewModel = newRecipeViewModel,
+                newStitchRowViewModel = newStitchRowViewModel,
                 onNewRecipeSuccess = { /*TODO*/ }
             )
         }

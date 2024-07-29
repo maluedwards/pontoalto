@@ -4,8 +4,10 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.pontoalto.model.entity.Recipe
+import com.example.pontoalto.model.entity.RecipeWithRows
 
 @Dao
 interface RecipeDao{
@@ -21,7 +23,9 @@ interface RecipeDao{
     @Query("SELECT * FROM Recipe")
     fun loadAllRecipes():Array<Recipe>
 
+    @Transaction
     @Query("SELECT * FROM Recipe WHERE recipeName = :recipeName")
-    suspend fun getRecipeByName(recipeName: String): Recipe?
+    fun getRecipeByName(recipeName: String): RecipeWithRows?
+
 
 }

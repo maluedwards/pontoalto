@@ -39,9 +39,6 @@ class NewRecipeViewModel(private val recipeRepository: RecipeRepository): ViewMo
             _nrecipeState.update { it.copy(error = "All fields are required") }
             return
         }
-        if (state.rows == 0){
-            _nrecipeState.update { it.copy(error = "At least one row required") }
-        }
 
         _nrecipeState.update { it.copy(isLoading = true) }
 
@@ -53,8 +50,6 @@ class NewRecipeViewModel(private val recipeRepository: RecipeRepository): ViewMo
                 val recipe = Recipe(
                     recipeName = state.recipeName,
                     difficulty = state.difficulty,
-                    rows = state.rows,
-                    totalStitches = state.totalStitches
                 )
                 recipeRepository.insertRecipe(recipe)
                 _nrecipeState.update { it.copy(isRegistered = true, isLoading = false) }

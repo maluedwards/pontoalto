@@ -10,12 +10,14 @@ import com.example.pontoalto.model.entity.*
 @Database(
     entities = [
         Recipe::class,
+        StitchRow::class,
         Project::class],
-    version = 1,
+    version = 2,
     exportSchema = false)
 abstract class PontoAltoDatabase : RoomDatabase() {
 
     abstract fun recipeDao(): RecipeDao
+    abstract fun stitchRowDao(): StitchRowDao
     abstract fun projectDao(): ProjectDao
 
     companion object {
@@ -26,6 +28,7 @@ abstract class PontoAltoDatabase : RoomDatabase() {
             // if the Instance is not null, return it, otherwise create a new database instance.
             return INSTANCE ?: synchronized(this) {
                 Room.databaseBuilder(context, PontoAltoDatabase::class.java, "pontoalto_database")
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { INSTANCE = it }
             }
