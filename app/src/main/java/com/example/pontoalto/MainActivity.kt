@@ -31,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.pontoalto.model.database.PontoAltoDatabase
+import com.example.pontoalto.model.repository.ProjectRepository
 import com.example.pontoalto.model.repository.RecipeRepository
 import com.example.pontoalto.model.repository.StitchRowRepository
 import com.example.pontoalto.view.screens.HomeScreen
@@ -39,6 +40,9 @@ import com.example.pontoalto.view.screens.RecipesScreen
 import com.example.pontoalto.viewmodel.NewRecipeViewModel
 import com.example.pontoalto.viewmodel.NewRecipeViewModelFactory
 import com.example.pontoalto.viewmodel.NewStitchRowViewModel
+import com.example.pontoalto.viewmodel.ProjectViewModel
+import com.example.pontoalto.viewmodel.ProjectViewModelFactory
+import com.example.pontoalto.viewmodel.RecipeViewModel
 import com.example.pontoalto.viewmodel.StitchRowViewModelFactory
 
 class MainActivity : ComponentActivity() {
@@ -59,18 +63,27 @@ fun PontoAlto() {
     val db = PontoAltoDatabase.getDatabase(context)
     val recipeDao = db.recipeDao()
     val stitchRowDao = db.stitchRowDao()
+    val projectDao = db.projectDao()
     val recipeRepository = RecipeRepository(recipeDao)
     val stitchRowRepository = StitchRowRepository(stitchRowDao)
+    val projectRepository = ProjectRepository(projectDao)
 
     // ViewModel Factory
     val factory = NewRecipeViewModelFactory(recipeRepository)
     val newRecipeViewModel: NewRecipeViewModel = viewModel(factory = factory)
     val newStitchRowViewModel: NewStitchRowViewModel = viewModel(factory = StitchRowViewModelFactory(stitchRowRepository))
+    val projectViewModel: ProjectViewModel = viewModel(factory = ProjectViewModelFactory(projectRepository))
 
 
     NavHost(navController = navController, startDestination = "home") {
-        composable("home") { HomeScreen(navController) }
-        composable("recipes") { RecipesScreen(navController) }
+        composable("home") { HomeScreen(
+            navController,
+            projectViewModel
+            ) }
+        composable("recipes") { RecipesScreen(
+            navController,
+            recipeViewModel = RecipeViewModel(recipeRepository)
+        ) }
         composable("new-recipe") {
             NewRecipeScreen(
                 navController = navController,
@@ -118,24 +131,5 @@ fun MyNavBar(
             onClick = { navController.navigate("new-recipe") },
             icon = { Icon( Icons.Filled.Create, contentDescription = "New Recipe" ) }
         )
-    }
-}
-
-@Composable
-fun ReceitaHor(){
-    Column (horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(Icons.Filled.AccountCircle, contentDescription = null)
-        Text(text = "Receita")
-    }
-}
-
-@Composable
-fun ReceitaVer(){
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(Icons.Filled.AccountCircle, contentDescription = null)
-        Text(text = "Receita")
     }
 }

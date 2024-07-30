@@ -8,21 +8,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.pontoalto.MyHeader
 import com.example.pontoalto.MyNavBar
-import com.example.pontoalto.ReceitaHor
-import com.example.pontoalto.ReceitaVer
-import com.example.pontoalto.model.entity.Recipe
-import com.example.pontoalto.model.repository.RecipeRepository
+import com.example.pontoalto.model.entity.Project
 import com.example.pontoalto.ui.theme.PontoAltoTheme
-import com.example.pontoalto.viewmodel.RecipeViewModel
+import com.example.pontoalto.viewmodel.ProjectViewModel
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController, projectViewModel: ProjectViewModel) {
+
+    val projects by projectViewModel.projects.collectAsState()
 
     PontoAltoTheme {
         Scaffold(
@@ -32,56 +31,43 @@ fun HomeScreen(navController: NavHostController) {
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )
         { innerPadding ->
-            Column (
-                Modifier
+
+            ElevatedCard(
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(20.dp)
             ) {
-                ElevatedCard(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(0.98.toFloat())
-                ) {
-                    Text(text = "Current Projects",
-                        modifier = Modifier.padding(8.dp))
-                    Row(Modifier
-                        .padding(10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ){
-                        ReceitaHor()
-                        ReceitaHor()
+                Text(text = "Current Projects",
+                    modifier = Modifier.padding(15.dp),
+                    style = MaterialTheme.typography.titleLarge)
+                Column(Modifier.padding(10.dp)) {
+                    projects.forEach { project ->
+                        ProjectItem(project = project, navController = navController)
                     }
                 }
-
             }
         }
     }
 }
 
 @Composable
-fun RecipeCard(recipe: Recipe, navController: NavHostController) {
-    ElevatedCard(
+fun ProjectItem(project: Project, navController: NavHostController) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(8.dp)
             .clickable {
-                // Handle recipe click, navigate to recipe details
-                navController.navigate("recipe_detail_screen/${recipe.recipeName}")
-            }
+                // Navegar para os detalhes do projeto (se necessário)
+                // navController.navigate("project_details_screen/${project.id}")
+            },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = recipe.recipeName, style = MaterialTheme.typography.titleMedium)
-            // Optionally, show more details about the recipe here
-        }
+        Text(text = project.projectName)
     }
 }
+
 
 

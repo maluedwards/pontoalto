@@ -3,25 +3,24 @@ package com.example.pontoalto.model.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.pontoalto.model.entity.Project
 import com.example.pontoalto.model.entity.Recipe
 import com.example.pontoalto.model.entity.StitchRow
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ProjectDao{
-    @Insert
-    suspend fun insertProject(vararg project: Project)
+interface ProjectDao {
+    @Query("SELECT * FROM projects")
+    fun getAllProjects(): Flow<List<Project>>
 
-    @Delete
-    fun deleteProject(vararg project: Project)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertProject(project: Project)
 
     @Update
-    fun updateProject(vararg project: Project)
-
-    @Query("SELECT * FROM Project")
-    fun loadAllProjects():Array<Project>
-
+    suspend fun updateProject(project: Project)
 
 }
+

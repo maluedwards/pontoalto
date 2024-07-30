@@ -128,9 +128,11 @@ fun Layout(
                                 .padding(6.dp)
                         ) {
                             var expand by remember { mutableStateOf(false) }
+                            var difficulty by remember { mutableStateOf("Difficulty") }
 
                             OutlinedButton(onClick = { expand = true }, modifier = Modifier.padding(6.dp)) {
-                                Text(text = "Difficulty")
+                                
+                                Text(text = difficulty)
                             }
 
                             DropdownMenu(
@@ -141,6 +143,7 @@ fun Layout(
                                     text = { Text(text = "Advanced") },
                                     onClick = {
                                         newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateDifficulty(3))
+                                        difficulty = "Advanced"
                                         expand = false
                                     }
                                 )
@@ -148,6 +151,7 @@ fun Layout(
                                     text = { Text(text = "Intermediate") },
                                     onClick = {
                                         newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateDifficulty(2))
+                                        difficulty = "Intermediate"
                                         expand = false
                                     }
                                 )
@@ -155,6 +159,7 @@ fun Layout(
                                     text = { Text(text = "Basic") },
                                     onClick = {
                                         newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateDifficulty(1))
+                                        difficulty = "Basic"
                                         expand = false
                                     }
                                 )
@@ -180,10 +185,6 @@ fun Layout(
                         ) {
                             Text(text = "Save Recipe")
                         }
-
-                        Text(text = "isRegistered: ${newRecipeState.isRegistered}") // Visual debug
-
-
 
                     }
                 }
