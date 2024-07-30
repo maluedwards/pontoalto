@@ -24,11 +24,6 @@ import com.example.pontoalto.viewmodel.RecipeViewModel
 @Composable
 fun HomeScreen(navController: NavHostController) {
 
-    val recipeViewModel: RecipeViewModel = viewModel(
-        factory = newRecipeViewModelFactory(RecipeRepository()) // Pass the actual repository instance
-    )
-    val recipes by recipeViewModel.recipes.collectAsState()
-
     PontoAltoTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
