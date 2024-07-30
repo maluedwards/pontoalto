@@ -25,7 +25,7 @@ import com.example.pontoalto.viewmodel.RecipeViewModel
 fun HomeScreen(navController: NavHostController) {
 
     val recipeViewModel: RecipeViewModel = viewModel(
-        factory = RecipeViewModelFactory(RecipeRepository()) // Pass the actual repository instance
+        factory = newRecipeViewModelFactory(RecipeRepository()) // Pass the actual repository instance
     )
     val recipes by recipeViewModel.recipes.collectAsState()
 
@@ -60,21 +60,7 @@ fun HomeScreen(navController: NavHostController) {
                         ReceitaHor()
                     }
                 }
-                ElevatedCard(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    modifier = Modifier
-                        .fillMaxSize(0.98.toFloat())
-                ) {
-                    Text(text = "Recipes",
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    Column(Modifier.padding(10.dp)) {
-                        recipes.forEach { recipe ->
-                            RecipeCard(recipe, navController)
-                        }
-                    }
 
-                }
             }
         }
     }
