@@ -75,8 +75,7 @@ fun PontoAlto() {
             NewRecipeScreen(
                 navController = navController,
                 newRecipeViewModel = newRecipeViewModel,
-                newStitchRowViewModel = newStitchRowViewModel,
-                onNewRecipeSuccess = { /*TODO*/ }
+                newStitchRowViewModel = newStitchRowViewModel
             )
         }
     }

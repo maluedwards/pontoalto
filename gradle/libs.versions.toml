@@ -1,21 +1,22 @@
 [versions]
-agp = "8.5.0"
+agp = "8.5.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.3"
-activityCompose = "1.9.0"
-composeBom = "2024.04.01"
+lifecycleRuntimeKtx = "2.8.4"
+activityCompose = "1.9.1"
+composeBom = "2024.06.00"
 navigationCompose = "2.7.7"
 room_version = "2.6.1"
+kotlinx_coroutines_core = "1.7.3"
+kotlinx_coroutines_android = "1.7.3"
 
 [libraries]
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version"}
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version"}
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
-room-ksp = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -31,9 +32,11 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx_coroutines_core" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx_coroutines_android" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-ksp = { id = "com.google.devtools.ksp", version = "1.6.21-1.0.6" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version = "1.9.0-1.0.12" }
 

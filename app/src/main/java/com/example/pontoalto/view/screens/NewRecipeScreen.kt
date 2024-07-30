@@ -1,5 +1,6 @@
 package com.example.pontoalto.view.screens
 
+import android.util.Log
 import android.view.Menu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -8,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,22 +39,27 @@ import com.example.pontoalto.viewmodel.state.NewStitchRowState
 fun NewRecipeScreen(
     navController: NavHostController,
     newRecipeViewModel: NewRecipeViewModel,
-    newStitchRowViewModel: NewStitchRowViewModel,
-    onNewRecipeSuccess: () -> Unit
-    ) {
-
+    newStitchRowViewModel: NewStitchRowViewModel
+) {
     val newRecipeState = newRecipeViewModel.uiState.collectAsState().value
+    val newStitchRowState = newStitchRowViewModel.uiState.collectAsState().value
     val keyboardController = LocalSoftwareKeyboardController.current
-    val stitchRowsState by newStitchRowViewModel.stitchRowsState.collectAsState()
+
+    // Navigate to the home screen if the recipe has been registered
+    LaunchedEffect(newRecipeState.isRegistered) {
+        Log.d("NewRecipeScreen", "isRegistered: ${newRecipeState.isRegistered}")
+        if (newRecipeState.isRegistered) {
+            navController.navigate("home") {
+                popUpTo("new-recipe") { inclusive = true }
+            }
+        }
+    }
 
     Layout(
-
         newRecipeState = newRecipeState,
         newRecipeViewModel = newRecipeViewModel,
-        onNewRecipeSuccess = { /*TODO*/ },
-        onCreateClick = { /*TODO*/ },
-        newStitchRowViewModel,
-        newStitchRowState = stitchRowsState,
+        newStitchRowState = newStitchRowState,
+        newStitchRowViewModel = newStitchRowViewModel,
         keyboardController = keyboardController,
         navController = navController
     )
@@ -62,153 +69,149 @@ fun NewRecipeScreen(
 fun Layout(
     newRecipeState: NewRecipeState,
     newRecipeViewModel: NewRecipeViewModel,
-    onNewRecipeSuccess: () -> Unit,
-    onCreateClick: () -> Unit,
+    newStitchRowState: NewStitchRowState,
     newStitchRowViewModel: NewStitchRowViewModel,
-    newStitchRowState: List<NewStitchRowState>,
     keyboardController: SoftwareKeyboardController?,
     navController: NavHostController
-){ PontoAltoTheme {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = { MyHeader() },
-        bottomBar = { MyNavBar( listRecipes = false, home = false, newRecipe = true, navController) },
-        containerColor = MaterialTheme.colorScheme.primaryContainer
-    )
-    { innerPadding ->
-        Column (
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ElevatedCard(
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                modifier = Modifier
-                    .fillMaxSize(0.98.toFloat())
+) {
+    PontoAltoTheme {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = { MyHeader() },
+            bottomBar = { MyNavBar(listRecipes = false, home = false, newRecipe = true, navController) },
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ) { innerPadding ->
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "New Recipe",
-                    modifier = Modifier.padding(8.dp)
-                )
-                Column (
-                    Modifier
-                        .fillMaxSize()
-                        .padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)){
-
-                    //recipe name text field
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = newRecipeState.recipeName,
-                        onValueChange = { newRecipeViewModel.onEvent((NewRecipeUiEvent::UpdateRecipeName)(it)) },
-                        placeholder = {
-                            Text("Recipe Name")
-                        },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {keyboardController?.hide() }
-                        ),
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    modifier = Modifier.fillMaxSize(0.98f)
+                ) {
+                    Text(
+                        text = "New Recipe",
+                        modifier = Modifier.padding(8.dp)
                     )
-                    
-                    Spacer(modifier = Modifier.fillMaxWidth())
-
-
-                    //difficulty menu
-                    Box (modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentSize(Alignment.TopStart)
-                        .padding(6.dp)
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        var expand by remember { mutableStateOf(false) }
+                        // Recipe name text field
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = newRecipeState.recipeName,
+                            onValueChange = { newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateRecipeName(it)) },
+                            placeholder = { Text("Recipe Name") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = { keyboardController?.hide() }
+                            ),
+                        )
+                        Spacer(modifier = Modifier.fillMaxWidth())
 
-                        //make difficulty appear on button after choosing one
-                        OutlinedButton(onClick = { expand = true},
-                            modifier = Modifier.padding(6.dp)) {
-                            Text(text = "Difficulty")
-                        }
-
-                        //add press effect to items
-                        DropdownMenu(
-                            expanded = expand,
-                            onDismissRequest = { expand = false},
-                            //modifier = Modifier.fillMaxSize()
+                        // Difficulty menu
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentSize(Alignment.TopStart)
+                                .padding(6.dp)
                         ) {
-                            DropdownMenuItem(
-                                text = {  Text(text = "Advanced")},
-                                onClick = {
-                                    newRecipeViewModel.onEvent((NewRecipeUiEvent::UpdateDifficulty)(3));
-                                    expand = false
-                                }
+                            var expand by remember { mutableStateOf(false) }
+
+                            OutlinedButton(onClick = { expand = true }, modifier = Modifier.padding(6.dp)) {
+                                Text(text = "Difficulty")
+                            }
+
+                            DropdownMenu(
+                                expanded = expand,
+                                onDismissRequest = { expand = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text(text = "Advanced") },
+                                    onClick = {
+                                        newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateDifficulty(3))
+                                        expand = false
+                                    }
                                 )
-                            DropdownMenuItem(
-                                text = {  Text(text = "Intermediate")},
-                                onClick = {
-                                    newRecipeViewModel.onEvent((NewRecipeUiEvent::UpdateDifficulty)(2));
-                                    expand = false
-                                })
-                            DropdownMenuItem(
-                                text = {  Text(text = "Basic")},
-                                onClick = {
-                                    newRecipeViewModel.onEvent((NewRecipeUiEvent::UpdateDifficulty)(1));
-                                    expand = false
-                                })
+                                DropdownMenuItem(
+                                    text = { Text(text = "Intermediate") },
+                                    onClick = {
+                                        newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateDifficulty(2))
+                                        expand = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text(text = "Basic") },
+                                    onClick = {
+                                        newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateDifficulty(1))
+                                        expand = false
+                                    }
+                                )
+                            }
                         }
-                    }
 
+                        Spacer(modifier = Modifier.fillMaxWidth())
+                        HorizontalDivider()
 
-                    
-                    Spacer(modifier = Modifier.fillMaxWidth())
-                    HorizontalDivider()
-                    //stitch rows beginning
-                    val stitchRowsState by newStitchRowViewModel.stitchRowsState.collectAsState()
-
-                    Column {
-                        Button(onClick = { newStitchRowViewModel.addNewRow() }) {
-                            Text(text = "Add Stitch Row")
-                        }
-                        stitchRowsState.forEachIndexed { index, newStitchRowState ->
+                        // Stitch rows section
+                        Column {
                             NewRow(
                                 newStitchRowState = newStitchRowState,
                                 newStitchRowViewModel = newStitchRowViewModel,
-                                keyboardController = keyboardController,
-                                index = index
+                                keyboardController = keyboardController
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
                         }
+
+                        // Save Recipe Button
+                        Button(
+                            onClick = { newRecipeViewModel.onEvent(NewRecipeUiEvent.SaveRecipe) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Save Recipe")
+                        }
+
+                        Text(text = "isRegistered: ${newRecipeState.isRegistered}") // Visual debug
+
 
 
                     }
-
-
                 }
             }
         }
     }
 }
 
-}
 
 @Composable
 fun NewRow(
     newStitchRowState: NewStitchRowState,
     newStitchRowViewModel: NewStitchRowViewModel,
-    keyboardController: SoftwareKeyboardController?,
-    index: Int
+    keyboardController: SoftwareKeyboardController?
 ) {
     Column {
+        // Exibir a lista de stitch rows
+        newStitchRowState.stitchRows.forEach { stitchRow ->
+            Row(modifier = Modifier.padding(8.dp)) {
+                Text(text = "Row ${stitchRow.rowNumber}: ${stitchRow.instructions}, ${stitchRow.stitches} stitches")
+            }
+        }
+
         // Instructions
         TextField(
             value = newStitchRowState.instructions,
             singleLine = true,
-            onValueChange = { newInstructions ->
-                newStitchRowViewModel.onEvent(NewStitchRowUiEvent.UpdateInstructions(newInstructions), index)
-            },
+            onValueChange = { newInstructions -> newStitchRowViewModel.onEvent(NewStitchRowUiEvent.UpdateInstructions(newInstructions)) },
             placeholder = { Text(text = "Chain 7") },
             label = { Text(text = "Row instructions") },
             keyboardOptions = KeyboardOptions(
@@ -219,16 +222,15 @@ fun NewRow(
                 onDone = { keyboardController?.hide() }
             )
         )
-        Spacer(modifier = Modifier.fillMaxWidth())
-        // Number of stitches
-        var inputValue by remember { mutableStateOf(newStitchRowState.stitches.toString()) }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Number of stitches in this row
         TextField(
-            value = inputValue,
+            value = newStitchRowState.stitches.toString(),
             singleLine = true,
             onValueChange = { newValue ->
-                inputValue = newValue
                 val intValue = newValue.toIntOrNull() ?: 0
-                newStitchRowViewModel.onEvent(NewStitchRowUiEvent.UpdateStitches(intValue), index)
+                newStitchRowViewModel.onEvent(NewStitchRowUiEvent.UpdateStitches(intValue))
             },
             label = { Text(text = "Number of Stitches") },
             keyboardOptions = KeyboardOptions(
@@ -239,10 +241,11 @@ fun NewRow(
                 onDone = { keyboardController?.hide() }
             )
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        // Save button for each row
-        Button(onClick = { newStitchRowViewModel.onEvent(NewStitchRowUiEvent.SaveStitchRow(index), index) }) {
-            Text(text = "Save Stitch Row")
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Add Stitch Row Button
+        Button(onClick = { newStitchRowViewModel.onEvent(NewStitchRowUiEvent.NewStitchRow) }) {
+            Text("Add Stitch Row")
         }
     }
 }

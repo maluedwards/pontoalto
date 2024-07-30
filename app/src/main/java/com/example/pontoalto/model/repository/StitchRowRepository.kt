@@ -17,4 +17,8 @@ class StitchRowRepository(private val stitchRowDao: StitchRowDao) {
         return stitchRowDao.getStitchRowByNumber(rowNumber)
     }
 
+    suspend fun getMaxRowNumber(recipeName: String): Int {
+        return stitchRowDao.getMaxRowNumber(recipeName) ?: 0
+    }
+
 }

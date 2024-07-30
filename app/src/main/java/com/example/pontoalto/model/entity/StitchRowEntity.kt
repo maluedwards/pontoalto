@@ -3,9 +3,8 @@ package com.example.pontoalto.model.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(primaryKeys = ["rowNumber", "inRecipeName"])
 data class StitchRow(
-    @PrimaryKey
     val rowNumber: Int,
     val inRecipeName: String,
     val instructions: String,

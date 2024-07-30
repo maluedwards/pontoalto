@@ -1,7 +1,9 @@
 package com.example.pontoalto.viewmodel.event
 
-sealed class NewRecipeUiEvent{
+import com.example.pontoalto.model.entity.StitchRow
+
+sealed class NewRecipeUiEvent {
     data class UpdateRecipeName(val recipeName: String) : NewRecipeUiEvent()
     data class UpdateDifficulty(val difficulty: Int) : NewRecipeUiEvent()
-    data object NewRecipe : NewRecipeUiEvent()
+    data object SaveRecipe : NewRecipeUiEvent()
 }

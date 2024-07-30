@@ -17,61 +17,45 @@ import kotlinx.coroutines.launch
 
 class NewStitchRowViewModel(private val stitchRowRepository: StitchRowRepository) : ViewModel() {
 
-    //
-    private val _stitchRowsState = MutableStateFlow<List<NewStitchRowState>>(emptyList())
-    val stitchRowsState: StateFlow<List<NewStitchRowState>> = _stitchRowsState.asStateFlow()
+    private val _nstitchrstate = MutableStateFlow(NewStitchRowState())
+    val uiState: StateFlow<NewStitchRowState> = _nstitchrstate.asStateFlow()
 
-    fun addNewRow() {
-        val newRowState = NewStitchRowState() // Cria um novo estado padrão
-        _stitchRowsState.update { it + newRowState }
-    }
-
-
-    fun onEvent(event: NewStitchRowUiEvent, index: Int) {
+    fun onEvent(event: NewStitchRowUiEvent) {
         when (event) {
             is NewStitchRowUiEvent.UpdateInstructions -> {
-                _stitchRowsState.update {
-                    it.toMutableList().apply {
-                        this[index] = this[index].copy(instructions = event.instructions)
-                    }
-                }
+                _nstitchrstate.update { it.clearError().copy(instructions = event.instructions) }
             }
             is NewStitchRowUiEvent.UpdateStitches -> {
-                _stitchRowsState.update {
-                    it.toMutableList().apply {
-                        this[index] = this[index].copy(stitches = event.stitches)
-                    }
-                }
+                _nstitchrstate.update { it.clearError().copy(stitches = event.stitches) }
             }
-            is NewStitchRowUiEvent.NewStitchRow -> { addNewRow() }
-            is NewStitchRowUiEvent.SaveStitchRow -> { saveStitchRow(index) }
+            is NewStitchRowUiEvent.NewStitchRow -> {
+                addNewStitchRow()
+            }
         }
     }
 
-    private fun saveStitchRow(index: Int) {
-        viewModelScope.launch {
-            val state = _stitchRowsState.value[index]
-            if (state.instructions.isBlank() || state.stitches == 0) {
-                _stitchRowsState.update {
-                    it.toMutableList().apply {
-                        this[index] = this[index].copy(error = "All fields are required")
-                    }
-                }
-                return@launch
-            }
+    private fun addNewStitchRow() {
+        val state = _nstitchrstate.value
+        if (state.instructions.isBlank() || state.stitches == 0) {
+            _nstitchrstate.update { it.copy(error = "All fields are required") }
+            return
+        }
 
-            val stitchRow = StitchRow(
-                rowNumber = state.rowNumber,
-                inRecipeName = state.inRecipeName,
-                instructions = state.instructions,
-                stitches = state.stitches
+        val newStitchRow = StitchRow(
+            rowNumber = state.stitchRows.size + 1,
+            inRecipeName = state.inRecipeName,
+            instructions = state.instructions,
+            stitches = state.stitches
+        )
+
+        val updatedStitchRows = state.stitchRows + newStitchRow
+
+        _nstitchrstate.update {
+            it.copy(
+                stitchRows = updatedStitchRows, // Atualize a lista de stitchRows
+                instructions = "", // Limpe o campo de instruções
+                stitches = 0 // Limpe o campo de pontos
             )
-            stitchRowRepository.insertStitchRow(stitchRow)
-            _stitchRowsState.update {
-                it.toMutableList().apply {
-                    this[index] = this[index].copy(isRegistered = true, isLoading = false)
-                }
-            }
         }
     }
 }

@@ -12,7 +12,7 @@ import com.example.pontoalto.model.entity.*
         Recipe::class,
         StitchRow::class,
         Project::class],
-    version = 2,
+    version = 3,
     exportSchema = false)
 abstract class PontoAltoDatabase : RoomDatabase() {
 
