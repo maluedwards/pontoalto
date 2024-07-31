@@ -84,6 +84,15 @@ fun RecipeDetailsScreen(
 
                     Button(
                         onClick = {
+                            navController.navigate("new-project/${recipeName}")
+                        },
+                        modifier = Modifier.padding(top = 16.dp)
+                    ) {
+                        Text("Add New Project")
+                    }
+
+                    Button(
+                        onClick = {
                             Log.d("RecipeDetailsScreen", "Deleting recipe: ${recipe?.recipe?.recipeName}")
                             recipeViewModel.deleteRecipe(recipe?.recipe?.recipeName ?: "")
                             navController.navigate("recipes") {

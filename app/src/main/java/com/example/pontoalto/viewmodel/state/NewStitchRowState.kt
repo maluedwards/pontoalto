@@ -10,7 +10,7 @@ data class NewStitchRowState(
     val error: String? = null,
     val rowNumber: Int = 0,
     val inRecipeName: String = "",
-    val stitchRows: List<StitchRow> = emptyList() // Inclua esta linha
+    val stitchRows: List<StitchRow> = emptyList()
 )
  {
     fun clearError() = copy(error = null)

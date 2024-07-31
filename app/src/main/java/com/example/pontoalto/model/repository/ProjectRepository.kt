@@ -11,7 +11,11 @@ class ProjectRepository(private val projectDao: ProjectDao) {
         projectDao.insertProject(project)
     }
 
-    suspend fun updateProject(project: Project) {
-        projectDao.updateProject(project)
+    suspend fun getProjectByName(name: String): Project {
+        return projectDao.getProjectByName(name)
+    }
+
+    suspend fun updateCurrentStitch(projectName: String, newCount: Int) {
+        projectDao.updateCurrentStitch(projectName, newCount)
     }
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PontoAlto</string>
+    <string name="home_screen">Test string</string>
 </resources>
