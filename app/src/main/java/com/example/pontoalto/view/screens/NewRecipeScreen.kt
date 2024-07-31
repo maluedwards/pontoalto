@@ -17,9 +17,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.*
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -27,6 +32,7 @@ import androidx.navigation.NavHostController
 import androidx.room.BuiltInTypeConverters
 import com.example.pontoalto.MyHeader
 import com.example.pontoalto.MyNavBar
+import com.example.pontoalto.R
 import com.example.pontoalto.ui.theme.PontoAltoTheme
 import com.example.pontoalto.viewmodel.NewRecipeViewModel
 import com.example.pontoalto.viewmodel.NewStitchRowViewModel
@@ -74,118 +80,163 @@ fun Layout(
     keyboardController: SoftwareKeyboardController?,
     navController: NavHostController
 ) {
+
+    val gradient = Brush.linearGradient(
+        0.1f to Color(0xFFB685E8),
+        0.1f to Color(0xFFB685E8),
+        1.0f to Color(0xFFFFFFFF),
+        start = Offset(0f, 0f),
+        end = Offset(0f, Float.POSITIVE_INFINITY)
+    )
+
+    val customFont = FontFamily(
+        Font(R.font.poetsen_one, FontWeight.Normal)
+    )
+
     PontoAltoTheme {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = { MyHeader() },
-            bottomBar = { MyNavBar(listRecipes = false, home = false, newRecipe = true, navController) },
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ) { innerPadding ->
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ElevatedCard(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    modifier = Modifier.fillMaxSize(0.98f)
-                ) {
-                    Text(
-                        text = "New Recipe",
-                        modifier = Modifier.padding(8.dp)
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(gradient)) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                topBar = { MyHeader() },
+                bottomBar = {
+                    MyNavBar(
+                        listRecipes = false,
+                        home = false,
+                        newRecipe = true,
+                        navController
                     )
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                },
+                containerColor = Color.Transparent
+            ) { innerPadding ->
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ElevatedCard(
+                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                        modifier = Modifier.fillMaxSize(0.98f)
                     ) {
-                        // Recipe name text field
-                        TextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = newRecipeState.recipeName,
-                            onValueChange = { newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateRecipeName(it)) },
-                            placeholder = { Text("Recipe Name") },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Text,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = { keyboardController?.hide() }
-                            ),
+                        Text(
+                            text = "New Recipe",
+                            modifier = Modifier.padding(8.dp)
                         )
-                        Spacer(modifier = Modifier.fillMaxWidth())
-
-                        // Difficulty menu
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentSize(Alignment.TopStart)
-                                .padding(6.dp)
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            var expand by remember { mutableStateOf(false) }
-                            var difficulty by remember { mutableStateOf("Difficulty") }
-
-                            OutlinedButton(onClick = { expand = true }, modifier = Modifier.padding(6.dp)) {
-                                Text(text = difficulty)
-                            }
-
-                            DropdownMenu(
-                                expanded = expand,
-                                onDismissRequest = { expand = false }
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text(text = "Advanced") },
-                                    onClick = {
-                                        newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateDifficulty(3))
-                                        difficulty = "Advanced"
-                                        expand = false
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text(text = "Intermediate") },
-                                    onClick = {
-                                        newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateDifficulty(2))
-                                        difficulty = "Intermediate"
-                                        expand = false
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text(text = "Basic") },
-                                    onClick = {
-                                        newRecipeViewModel.onEvent(NewRecipeUiEvent.UpdateDifficulty(1))
-                                        difficulty = "Basic"
-                                        expand = false
-                                    }
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.fillMaxWidth())
-                        HorizontalDivider()
-
-                        // Stitch rows section
-                        Column {
-                            NewRow(
-                                newStitchRowState = newStitchRowState,
-                                newStitchRowViewModel = newStitchRowViewModel,
-                                recipeName = newRecipeState.recipeName,
-                                keyboardController = keyboardController
+                            // Recipe name text field
+                            TextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = newRecipeState.recipeName,
+                                onValueChange = {
+                                    newRecipeViewModel.onEvent(
+                                        NewRecipeUiEvent.UpdateRecipeName(
+                                            it
+                                        )
+                                    )
+                                },
+                                placeholder = { Text("Recipe Name") },
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = { keyboardController?.hide() }
+                                ),
                             )
-                        }
+                            Spacer(modifier = Modifier.fillMaxWidth())
 
-                        // Save Recipe Button
-                        Button(
-                            onClick = { newRecipeViewModel.onEvent(NewRecipeUiEvent.SaveRecipe) },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(text = "Save Recipe")
-                        }
+                            // Difficulty menu
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentSize(Alignment.TopStart)
+                                    .padding(6.dp)
+                            ) {
+                                var expand by remember { mutableStateOf(false) }
+                                var difficulty by remember { mutableStateOf("Difficulty") }
 
+                                OutlinedButton(
+                                    onClick = { expand = true },
+                                    modifier = Modifier.padding(6.dp)
+                                ) {
+                                    Text(text = difficulty)
+                                }
+
+                                DropdownMenu(
+                                    expanded = expand,
+                                    onDismissRequest = { expand = false }
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text(text = "Advanced") },
+                                        onClick = {
+                                            newRecipeViewModel.onEvent(
+                                                NewRecipeUiEvent.UpdateDifficulty(
+                                                    3
+                                                )
+                                            )
+                                            difficulty = "Advanced"
+                                            expand = false
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(text = "Intermediate") },
+                                        onClick = {
+                                            newRecipeViewModel.onEvent(
+                                                NewRecipeUiEvent.UpdateDifficulty(
+                                                    2
+                                                )
+                                            )
+                                            difficulty = "Intermediate"
+                                            expand = false
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(text = "Basic") },
+                                        onClick = {
+                                            newRecipeViewModel.onEvent(
+                                                NewRecipeUiEvent.UpdateDifficulty(
+                                                    1
+                                                )
+                                            )
+                                            difficulty = "Basic"
+                                            expand = false
+                                        }
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.fillMaxWidth())
+                            HorizontalDivider()
+
+                            // Stitch rows section
+                            Column {
+                                NewRow(
+                                    newStitchRowState = newStitchRowState,
+                                    newStitchRowViewModel = newStitchRowViewModel,
+                                    recipeName = newRecipeState.recipeName,
+                                    keyboardController = keyboardController
+                                )
+                            }
+
+                            // Save Recipe Button
+                            Button(
+                                onClick = { newRecipeViewModel.onEvent(NewRecipeUiEvent.SaveRecipe) },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(text = "Save Recipe")
+                            }
+
+                        }
                     }
                 }
             }

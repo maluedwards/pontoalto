@@ -1,6 +1,8 @@
 package com.example.pontoalto.view.screens
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,10 +21,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.pontoalto.MyHeader
 import com.example.pontoalto.MyNavBar
+import com.example.pontoalto.R
 import com.example.pontoalto.ui.theme.PontoAltoTheme
 import com.example.pontoalto.viewmodel.RecipeDetailsViewModel
 import com.example.pontoalto.viewmodel.StitchRowViewModel
@@ -36,6 +45,18 @@ fun RecipeDetailsScreen(
 ) {
     val recipe by recipeViewModel.recipeWithRows.collectAsState()
     val stitchRowsState by stitchRowViewModel.stitchRows.collectAsState()
+
+    val gradient = Brush.linearGradient(
+        0.1f to Color(0xFFB685E8),
+        0.1f to Color(0xFFB685E8),
+        1.0f to Color(0xFFFFFFFF),
+        start = Offset(0f, 0f),
+        end = Offset(0f, Float.POSITIVE_INFINITY)
+    )
+
+    val customFont = FontFamily(
+        Font(R.font.poetsen_one, FontWeight.Normal)
+    )
 
     LaunchedEffect(recipeName) {
         Log.d("RecipeDetailsScreen", "Loading recipe details for: $recipeName")
@@ -52,49 +73,65 @@ fun RecipeDetailsScreen(
     }
 
     PontoAltoTheme {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = { MyHeader() },
-            bottomBar = { MyNavBar(listRecipes = false, home = true, newRecipe = false, navController) },
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
-        { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(gradient)
+        ) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                topBar = { MyHeader() },
+                bottomBar = {
+                    MyNavBar(
+                        listRecipes = false,
+                        home = true,
+                        newRecipe = false,
+                        navController
+                    )
+                },
+                containerColor = Color.Transparent
+            )
+            { innerPadding ->
 
-            ElevatedCard(
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(20.dp)
-            ) {
-                Column {
-                    recipe?.let {
-                        Text(text = "Recipe Name: ${it.recipe.recipeName}")
-                        Text(text = "Difficulty: ${it.recipe.difficulty}")
-                    }
-
-                    Text(text = "Stitch Rows:")
-                    LazyColumn {
-                        items(stitchRowsState) { row ->
-                            Text(text = "Row ${row.rowNumber}: ${row.instructions} (${row.stitches} stitches)")
+                ElevatedCard(
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(20.dp)
+                ) {
+                    Column {
+                        recipe?.let {
+                            Text(text = "Recipe Name: ${it.recipe.recipeName}")
+                            Text(text = "Difficulty: ${it.recipe.difficulty}")
                         }
-                    } ?: run {
-                        Text(text = "Loading stitch rows...")
-                    }
 
-                    Button(
-                        onClick = {
-                            Log.d("RecipeDetailsScreen", "Deleting recipe: ${recipe?.recipe?.recipeName}")
-                            recipeViewModel.deleteRecipe(recipe?.recipe?.recipeName ?: "")
-                            navController.navigate("recipes") {
-                                popUpTo("recipe-detail") { inclusive = true }
+                        Text(text = "Stitch Rows:")
+                        LazyColumn {
+                            items(stitchRowsState) { row ->
+                                Text(text = "Row ${row.rowNumber}: ${row.instructions} (${row.stitches} stitches)")
                             }
-                        },
-                        modifier = Modifier.padding(top = 16.dp)
-                    ) {
-                        Text("Delete Recipe")
+                        } ?: run {
+                            Text(text = "Loading stitch rows...")
+                        }
+
+                        Button(
+                            onClick = {
+                                Log.d(
+                                    "RecipeDetailsScreen",
+                                    "Deleting recipe: ${recipe?.recipe?.recipeName}"
+                                )
+                                recipeViewModel.deleteRecipe(recipe?.recipe?.recipeName ?: "")
+                                navController.navigate("recipes") {
+                                    popUpTo("recipe-detail") { inclusive = true }
+                                }
+                            },
+                            modifier = Modifier.padding(top = 16.dp)
+                        ) {
+                            Text("Delete Recipe")
+                        }
+                        Log.d("RecipeDetailsScreen", "Recipe details: $recipe")
                     }
-                    Log.d("RecipeDetailsScreen", "Recipe details: $recipe")
                 }
             }
         }
