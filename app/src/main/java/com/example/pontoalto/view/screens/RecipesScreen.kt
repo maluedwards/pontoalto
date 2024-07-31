@@ -53,8 +53,7 @@ fun RecipesScreen(
                 ) {
                     items(recipes) { recipe ->
                         RecipeCard(recipe = recipe, onClick = {
-                            // Handle recipe click, e.g., navigate to recipe details
-                            //navController.navigate("recipe_detail/${recipe.}")
+                            navController.navigate("recipe-detail/${recipe.recipeName}")
                         })
                         HorizontalDivider()
                     }

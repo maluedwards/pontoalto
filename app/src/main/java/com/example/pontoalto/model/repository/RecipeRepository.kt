@@ -1,5 +1,6 @@
 package com.example.pontoalto.model.repository
 
+import android.util.Log
 import com.example.pontoalto.model.dao.RecipeDao
 import com.example.pontoalto.model.entity.Recipe
 import com.example.pontoalto.model.entity.RecipeWithRows
@@ -15,8 +16,13 @@ class RecipeRepository (private val recipeDao: RecipeDao) {
         return recipeDao.getAllRecipes()
     }
 
-    fun getRecipeByName(recipeName: String): RecipeWithRows? {
+    fun getRecipeByName(recipeName: String): Flow<RecipeWithRows> {
+        Log.d("Repository", "Fetching recipe by name: $recipeName")
         return recipeDao.getRecipeByName(recipeName)
+    }
+
+    suspend fun deleteRecipe(recipeName: String) {
+        recipeDao.deleteRecipeByName(recipeName)
     }
 
 

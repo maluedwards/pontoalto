@@ -16,8 +16,8 @@ interface RecipeDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipe(recipe: Recipe)
 
-    @Delete
-    suspend fun deleteRecipe(recipe: Recipe)
+    @Query("DELETE FROM recipe WHERE recipeName = :recipeName")
+    suspend fun deleteRecipeByName(recipeName: String)
 
     @Update
     suspend fun updateRecipe(vararg recipe: Recipe)
@@ -27,7 +27,7 @@ interface RecipeDao{
 
     @Transaction
     @Query("SELECT * FROM Recipe WHERE recipeName = :recipeName")
-    fun getRecipeByName(recipeName: String): RecipeWithRows?
+    fun getRecipeByName(recipeName: String): Flow<RecipeWithRows>
 
 
 }

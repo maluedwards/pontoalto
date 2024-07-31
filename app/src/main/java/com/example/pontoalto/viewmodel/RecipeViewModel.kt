@@ -5,22 +5,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.pontoalto.model.entity.Recipe
+import com.example.pontoalto.model.entity.RecipeWithRows
 import com.example.pontoalto.model.entity.StitchRow
 import com.example.pontoalto.model.repository.RecipeRepository
+import com.example.pontoalto.model.repository.StitchRowRepository
 import com.example.pontoalto.viewmodel.event.NewRecipeUiEvent
 import com.example.pontoalto.viewmodel.state.NewRecipeState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 
-class NewRecipeViewModel(
-    private val recipeRepository: RecipeRepository
-) : ViewModel() {
-
-    // Expose UI state
+class NewRecipeViewModel(private val recipeRepository: RecipeRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(NewRecipeState())
     val uiState: StateFlow<NewRecipeState> = _uiState.asStateFlow()
 
@@ -35,6 +36,9 @@ class NewRecipeViewModel(
             is NewRecipeUiEvent.SaveRecipe -> {
                 saveRecipe()
             }
+            is NewRecipeUiEvent.ClearState -> {
+                clearState()
+            }
         }
     }
 
@@ -45,22 +49,23 @@ class NewRecipeViewModel(
             return
         }
 
-        _uiState.update { it.copy(isLoading = true) }
-
         viewModelScope.launch {
             try {
-                // Save recipe
-                val recipe = Recipe(
-                    recipeName = state.recipeName,
+                val newRecipe = Recipe(
+                    recipeName =  state.recipeName,
                     difficulty = state.difficulty
                 )
-                recipeRepository.insertRecipe(recipe)
-
-                _uiState.update { it.copy(isRegistered = true, isLoading = false) }
+                recipeRepository.insertRecipe(newRecipe)
+                _uiState.update { it.copy(isRegistered = true) }
             } catch (e: Exception) {
-                Log.e("SaveRecipe", "Error saving recipe", e)
-                _uiState.update { it.copy(error = e.message ?: "An error occurred", isLoading = false) }
+                _uiState.update { it.copy(error = e.message ?: "An error occurred") }
             }
+        }
+    }
+
+    private fun clearState() {
+        _uiState.update {
+            NewRecipeState()
         }
     }
 }
@@ -80,6 +85,36 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     }
 }
 
+class RecipeDetailsViewModel(
+    private val recipeRepository: RecipeRepository
+) : ViewModel(){
+
+    private val _recipeWithRows = MutableStateFlow<RecipeWithRows?>(null)
+    val recipeWithRows: StateFlow<RecipeWithRows?> = _recipeWithRows.asStateFlow()
+
+    fun loadRecipeDetails(recipeName: String) {
+        viewModelScope.launch {
+            try {
+                val recipe = recipeRepository.getRecipeByName(recipeName).first()
+                _recipeWithRows.value = RecipeWithRows(recipe.recipe, recipe.rows)
+            } catch (e: Exception) {
+                Log.e("RecipeDetailsViewModel", "Error loading recipe details", e)
+            }
+        }
+    }
+
+    fun deleteRecipe(recipeName: String) {
+        viewModelScope.launch {
+            try {
+                recipeRepository.deleteRecipe(recipeName)
+            } catch (e: Exception) {
+                Log.e("RecipeDetailsViewModel", "Error deleting recipe", e)
+            }
+        }
+    }
+}
+
+
 
 
 class NewRecipeViewModelFactory(private val recipeRepository: RecipeRepository) : ViewModelProvider.Factory {
@@ -87,6 +122,16 @@ class NewRecipeViewModelFactory(private val recipeRepository: RecipeRepository) 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewRecipeViewModel::class.java)) {
             return NewRecipeViewModel(recipeRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class RecipeViewModelFactory(private val recipeRepository: RecipeRepository) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(RecipeDetailsViewModel::class.java)) {
+            return RecipeDetailsViewModel(recipeRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

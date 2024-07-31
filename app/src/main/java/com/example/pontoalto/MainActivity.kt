@@ -29,21 +29,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import com.example.pontoalto.model.database.PontoAltoDatabase
 import com.example.pontoalto.model.repository.ProjectRepository
 import com.example.pontoalto.model.repository.RecipeRepository
 import com.example.pontoalto.model.repository.StitchRowRepository
 import com.example.pontoalto.view.screens.HomeScreen
 import com.example.pontoalto.view.screens.NewRecipeScreen
+import com.example.pontoalto.view.screens.RecipeDetailsScreen
 import com.example.pontoalto.view.screens.RecipesScreen
 import com.example.pontoalto.viewmodel.NewRecipeViewModel
 import com.example.pontoalto.viewmodel.NewRecipeViewModelFactory
 import com.example.pontoalto.viewmodel.NewStitchRowViewModel
 import com.example.pontoalto.viewmodel.ProjectViewModel
 import com.example.pontoalto.viewmodel.ProjectViewModelFactory
+import com.example.pontoalto.viewmodel.RecipeDetailsViewModel
 import com.example.pontoalto.viewmodel.RecipeViewModel
+import com.example.pontoalto.viewmodel.RecipeViewModelFactory
+import com.example.pontoalto.viewmodel.StitchRowViewModel
 import com.example.pontoalto.viewmodel.StitchRowViewModelFactory
+import com.example.pontoalto.viewmodel.StitchRowsViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +80,8 @@ fun PontoAlto() {
     val newRecipeViewModel: NewRecipeViewModel = viewModel(factory = factory)
     val newStitchRowViewModel: NewStitchRowViewModel = viewModel(factory = StitchRowViewModelFactory(stitchRowRepository))
     val projectViewModel: ProjectViewModel = viewModel(factory = ProjectViewModelFactory(projectRepository))
+    val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel(factory = RecipeViewModelFactory(recipeRepository))
+    val stitchRowViewModel: StitchRowViewModel = viewModel(factory = StitchRowsViewModelFactory(stitchRowRepository))
 
 
     NavHost(navController = navController, startDestination = "home") {
@@ -89,6 +98,18 @@ fun PontoAlto() {
                 navController = navController,
                 newRecipeViewModel = newRecipeViewModel,
                 newStitchRowViewModel = newStitchRowViewModel
+            )
+        }
+        composable(
+            "recipe-detail/{recipeName}",
+            arguments = listOf(navArgument("recipeName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val recipeName = backStackEntry.arguments?.getString("recipeName") ?: ""
+            RecipeDetailsScreen(
+                navController = navController,
+                recipeName = recipeName,
+                recipeViewModel = recipeDetailsViewModel,
+                stitchRowViewModel = stitchRowViewModel
             )
         }
     }
@@ -133,3 +154,4 @@ fun MyNavBar(
         )
     }
 }
+

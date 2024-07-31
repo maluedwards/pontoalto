@@ -47,8 +47,8 @@ fun NewRecipeScreen(
 
     // Navigate to the home screen if the recipe has been registered
     LaunchedEffect(newRecipeState.isRegistered) {
-        Log.d("NewRecipeScreen", "isRegistered: ${newRecipeState.isRegistered}")
         if (newRecipeState.isRegistered) {
+            newRecipeViewModel.onEvent(NewRecipeUiEvent.ClearState)
             navController.navigate("home") {
                 popUpTo("new-recipe") { inclusive = true }
             }
@@ -131,7 +131,6 @@ fun Layout(
                             var difficulty by remember { mutableStateOf("Difficulty") }
 
                             OutlinedButton(onClick = { expand = true }, modifier = Modifier.padding(6.dp)) {
-                                
                                 Text(text = difficulty)
                             }
 
@@ -174,6 +173,7 @@ fun Layout(
                             NewRow(
                                 newStitchRowState = newStitchRowState,
                                 newStitchRowViewModel = newStitchRowViewModel,
+                                recipeName = newRecipeState.recipeName,
                                 keyboardController = keyboardController
                             )
                         }
@@ -198,16 +198,17 @@ fun Layout(
 fun NewRow(
     newStitchRowState: NewStitchRowState,
     newStitchRowViewModel: NewStitchRowViewModel,
+    recipeName: String,
     keyboardController: SoftwareKeyboardController?
 ) {
     Column {
-        // Exibir a lista de stitch rows
+        // Display the list of stitch rows
+        Log.d("NewRow", "Current recipe name: $recipeName")
         newStitchRowState.stitchRows.forEach { stitchRow ->
             Row(modifier = Modifier.padding(8.dp)) {
                 Text(text = "Row ${stitchRow.rowNumber}: ${stitchRow.instructions}, ${stitchRow.stitches} stitches")
             }
         }
-
         // Instructions
         TextField(
             value = newStitchRowState.instructions,
@@ -244,9 +245,24 @@ fun NewRow(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Add Stitch Row Button
-        Button(onClick = { newStitchRowViewModel.onEvent(NewStitchRowUiEvent.NewStitchRow) }) {
-            Text("Add Stitch Row")
+        // Add Row Button
+        Button(
+            onClick = {
+                newStitchRowViewModel.onEvent(NewStitchRowUiEvent.NewStitchRow(recipeName))
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "Add Row")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        // Display error message if any
+        newStitchRowState.error?.let { errorMessage ->
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
         }
     }
 }
+
