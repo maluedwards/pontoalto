@@ -18,4 +18,11 @@ class ProjectRepository(private val projectDao: ProjectDao) {
     suspend fun updateCurrentStitch(projectName: String, newCount: Int) {
         projectDao.updateCurrentStitch(projectName, newCount)
     }
+
+    suspend fun deleteProject(projectName: String) {
+        val project = projectDao.getProjectByName(projectName)
+        project.let {
+            projectDao.deleteProject(it)
+        }
+    }
 }

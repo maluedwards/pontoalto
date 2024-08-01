@@ -17,9 +17,10 @@ import androidx.navigation.NavHostController
 import com.example.pontoalto.MyHeader
 import com.example.pontoalto.MyNavBar
 import com.example.pontoalto.model.entity.Project
-import com.example.pontoalto.model.entity.Recipe
 import com.example.pontoalto.ui.theme.PontoAltoTheme
 import com.example.pontoalto.viewmodel.ProjectViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.pontoalto.R
 
 @Composable
 fun HomeScreen(navController: NavHostController, projectViewModel: ProjectViewModel) {

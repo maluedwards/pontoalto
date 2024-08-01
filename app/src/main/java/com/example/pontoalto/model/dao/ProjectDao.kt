@@ -22,6 +22,9 @@ interface ProjectDao {
     @Update
     suspend fun updateProject(project: Project)
 
+    @Delete
+    suspend fun deleteProject(project: Project)
+
     @Query("SELECT * FROM projects WHERE projectName = :name LIMIT 1")
     suspend fun getProjectByName(name: String): Project
 
