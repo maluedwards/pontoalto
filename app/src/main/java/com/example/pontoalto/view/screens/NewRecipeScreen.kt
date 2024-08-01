@@ -5,6 +5,7 @@ import android.view.Menu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -40,6 +41,8 @@ import com.example.pontoalto.viewmodel.event.NewRecipeUiEvent
 import com.example.pontoalto.viewmodel.event.NewStitchRowUiEvent
 import com.example.pontoalto.viewmodel.state.NewRecipeState
 import com.example.pontoalto.viewmodel.state.NewStitchRowState
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun NewRecipeScreen(
@@ -96,7 +99,7 @@ fun Layout(
     PontoAltoTheme {
         Box(modifier = Modifier
             .fillMaxSize()
-            .background(gradient)) {
+            .background(gradient)){
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 topBar = { MyHeader() },
@@ -122,10 +125,6 @@ fun Layout(
                         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                         modifier = Modifier.fillMaxSize(0.98f)
                     ) {
-                        Text(
-                            text = "New Recipe",
-                            modifier = Modifier.padding(8.dp)
-                        )
                         Column(
                             Modifier
                                 .fillMaxSize()
@@ -167,7 +166,9 @@ fun Layout(
 
                                 OutlinedButton(
                                     onClick = { expand = true },
-                                    modifier = Modifier.padding(6.dp)
+                                    modifier = Modifier.padding(6.dp).fillMaxWidth(),
+                                    shape = RoundedCornerShape(8.dp)
+
                                 ) {
                                     Text(text = difficulty)
                                 }
@@ -175,6 +176,7 @@ fun Layout(
                                 DropdownMenu(
                                     expanded = expand,
                                     onDismissRequest = { expand = false }
+
                                 ) {
                                     DropdownMenuItem(
                                         text = { Text(text = "Advanced") },
@@ -227,14 +229,17 @@ fun Layout(
                                     keyboardController = keyboardController
                                 )
                             }
-
+                            Spacer(modifier = Modifier.weight(1f))
                             // Save Recipe Button
                             Button(
                                 onClick = { newRecipeViewModel.onEvent(NewRecipeUiEvent.SaveRecipe) },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF84CE)),
+                                shape = RoundedCornerShape(8.dp)
                             ) {
                                 Text(text = "Save Recipe")
                             }
+
 
                         }
                     }
@@ -256,12 +261,25 @@ fun NewRow(
         // Display the list of stitch rows
         Log.d("NewRow", "Current recipe name: $recipeName")
         newStitchRowState.stitchRows.forEach { stitchRow ->
-            Row(modifier = Modifier.padding(8.dp)) {
-                Text(text = "Row ${stitchRow.rowNumber}: ${stitchRow.instructions}, ${stitchRow.stitches} stitches")
+            Column(modifier = Modifier.padding(8.dp)) {
+                Text(
+                    text = "Linha ${stitchRow.rowNumber}",
+                    color = Color(0xFF5941A9),
+                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Spacer(modifier = Modifier.height(1.dp))
+                Text(
+                    text = "${stitchRow.instructions}, ${stitchRow.stitches} pontos",
+                    color = Color(0xFF989898),
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
+
         // Instructions
         TextField(
+            modifier = Modifier.fillMaxWidth(),
             value = newStitchRowState.instructions,
             singleLine = true,
             onValueChange = { newInstructions -> newStitchRowViewModel.onEvent(NewStitchRowUiEvent.UpdateInstructions(newInstructions)) },
@@ -279,6 +297,7 @@ fun NewRow(
 
         // Number of stitches in this row
         TextField(
+            modifier = Modifier.fillMaxWidth(),
             value = newStitchRowState.stitches.toString(),
             singleLine = true,
             onValueChange = { newValue ->
@@ -301,10 +320,15 @@ fun NewRow(
             onClick = {
                 newStitchRowViewModel.onEvent(NewStitchRowUiEvent.NewStitchRow(recipeName))
             },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF84CE)),
+            shape = RoundedCornerShape(8.dp)
         ) {
             Text(text = "Add Row")
         }
+
         Spacer(modifier = Modifier.height(16.dp))
         // Display error message if any
         newStitchRowState.error?.let { errorMessage ->
