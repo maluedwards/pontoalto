@@ -2,7 +2,6 @@
 
 package com.example.pontoalto.view.screens
 
-import com.example.pontoalto.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.example.pontoalto.MyHeader
 import com.example.pontoalto.MyNavBar
 import com.example.pontoalto.model.entity.Project
+import com.example.pontoalto.R
 import com.example.pontoalto.ui.theme.PontoAltoTheme
 import com.example.pontoalto.viewmodel.ProjectViewModel
 import androidx.compose.ui.res.stringResource
@@ -66,7 +66,7 @@ fun HomeScreen(navController: NavHostController, projectViewModel: ProjectViewMo
                     .padding(20.dp)
             ) {
                 Text(
-                    text = "Projetos atuais",
+                    text = stringResource(id = R.string.project_current),
                     modifier = Modifier.padding(30.dp),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontFamily = customFont,
@@ -109,7 +109,7 @@ fun ProjectCard(project: Project, onClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Receita: ${project.recipeName}",
+                text = stringResource(id = R.string.recipe) + ": ${project.recipeName}",
                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
             )
         }
