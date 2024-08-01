@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -142,7 +143,7 @@ fun Layout(
                                         )
                                     )
                                 },
-                                placeholder = { Text("Recipe Name") },
+                                placeholder = { Text( text = stringResource(id = R.string.recipe_name))},
                                 singleLine = true,
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Text,
@@ -166,11 +167,13 @@ fun Layout(
 
                                 OutlinedButton(
                                     onClick = { expand = true },
-                                    modifier = Modifier.padding(6.dp).fillMaxWidth(),
+                                    modifier = Modifier
+                                        .padding(6.dp)
+                                        .fillMaxWidth(),
                                     shape = RoundedCornerShape(8.dp)
 
                                 ) {
-                                    Text(text = difficulty)
+                                    Text(text = stringResource(id = R.string.difficulty))
                                 }
 
                                 DropdownMenu(
@@ -179,7 +182,7 @@ fun Layout(
 
                                 ) {
                                     DropdownMenuItem(
-                                        text = { Text(text = "Advanced") },
+                                        text = { Text(text = stringResource(id = R.string.difficulty_advanced)) },
                                         onClick = {
                                             newRecipeViewModel.onEvent(
                                                 NewRecipeUiEvent.UpdateDifficulty(
@@ -191,7 +194,7 @@ fun Layout(
                                         }
                                     )
                                     DropdownMenuItem(
-                                        text = { Text(text = "Intermediate") },
+                                        text = { Text(text = stringResource(id = R.string.difficulty_intermediate)) },
                                         onClick = {
                                             newRecipeViewModel.onEvent(
                                                 NewRecipeUiEvent.UpdateDifficulty(
@@ -203,7 +206,7 @@ fun Layout(
                                         }
                                     )
                                     DropdownMenuItem(
-                                        text = { Text(text = "Basic") },
+                                        text = { Text(text = stringResource(id = R.string.difficulty_basic)) },
                                         onClick = {
                                             newRecipeViewModel.onEvent(
                                                 NewRecipeUiEvent.UpdateDifficulty(
@@ -237,7 +240,7 @@ fun Layout(
                                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF84CE)),
                                 shape = RoundedCornerShape(8.dp)
                             ) {
-                                Text(text = "Save Recipe")
+                                Text(text = stringResource(id = R.string.recipe_save))
                             }
 
 
@@ -259,18 +262,19 @@ fun NewRow(
 ) {
     Column {
         // Display the list of stitch rows
-        Log.d("NewRow", "Current recipe name: $recipeName")
         newStitchRowState.stitchRows.forEach { stitchRow ->
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(
-                    text = "Linha ${stitchRow.rowNumber}",
+                    text = stringResource(id = R.string.row) + " ${stitchRow.rowNumber}",
                     color = Color(0xFF5941A9),
                     fontSize = 18.sp,
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Spacer(modifier = Modifier.height(1.dp))
                 Text(
-                    text = "${stitchRow.instructions}, ${stitchRow.stitches} pontos",
+                    text = "${stitchRow.instructions}, ${stitchRow.stitches} " + stringResource(
+                        id = R.string.row_stitches
+                    ),
                     color = Color(0xFF989898),
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -283,8 +287,8 @@ fun NewRow(
             value = newStitchRowState.instructions,
             singleLine = true,
             onValueChange = { newInstructions -> newStitchRowViewModel.onEvent(NewStitchRowUiEvent.UpdateInstructions(newInstructions)) },
-            placeholder = { Text(text = "Chain 7") },
-            label = { Text(text = "Row instructions") },
+            placeholder = { Text(text = stringResource(id = R.string.row_placeholder)) },
+            label = { Text(text = stringResource(id = R.string.row_instruction)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Done
@@ -304,7 +308,7 @@ fun NewRow(
                 val intValue = newValue.toIntOrNull() ?: 0
                 newStitchRowViewModel.onEvent(NewStitchRowUiEvent.UpdateStitches(intValue))
             },
-            label = { Text(text = "Number of Stitches") },
+            label = { Text(text = stringResource(id = R.string.row_stitch_amount)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
@@ -326,7 +330,7 @@ fun NewRow(
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF84CE)),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text(text = "Add Row")
+            Text(text = stringResource(id = R.string.row_add))
         }
 
         Spacer(modifier = Modifier.height(16.dp))

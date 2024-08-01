@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -105,14 +106,14 @@ fun NewProjectScreen(
                                     )
                                 )
                             },
-                            label = { Text("Project Name") },
+                            label = { Text(text = stringResource(id = R.string.project_name)) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
                         Spacer(modifier = Modifier.fillMaxWidth())
                         Column() {
                             Text(
-                                text = "Recipe: ",
+                                text = stringResource(id = R.string.recipe) + ": ",
                                 color = Color(0xFF5941A9),
                                 fontSize = 22.sp,
                             )
@@ -135,7 +136,7 @@ fun NewProjectScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF84CE)),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text("Save Project")
+                            Text(text = stringResource(id = R.string.project_save))
                         }
 
                         if (newProjectState.error != null) {

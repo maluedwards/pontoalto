@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -107,12 +108,12 @@ fun RecipeDetailsScreen(
                 ) {
                     Column (modifier = Modifier.padding(20.dp)){
                         recipe?.let {
-                            Text(text = "Recipe Name: ${it.recipe.recipeName}",
+                            Text(text = stringResource(id = R.string.recipe_name) + ": ${it.recipe.recipeName}",
                                 fontFamily = customFont,
                                 fontSize = 24.sp,
                                 color = Color(0xFFFF84CE))
                             Spacer(modifier = Modifier.height(6.dp))
-                            Text(text = "Difficulty: ${it.recipe.difficulty}",
+                            Text(text = stringResource(id = R.string.difficulty) + ": ${it.recipe.difficulty}",
                                 fontFamily = customFont,
                                 fontSize = 18.sp,
                                 color = Color(0xFFFF84CE))
@@ -121,13 +122,14 @@ fun RecipeDetailsScreen(
                         HorizontalDivider()
                         Spacer(modifier = Modifier.height(10.dp))
 
-                        Text(text = "Stitch Rows:",
+                        Text(text = stringResource(id = R.string.row_stitch) + ":",
                             fontSize = 20.sp,
                             color = Color(0xFF5941A9))
                         Spacer(modifier = Modifier.height(10.dp))
                         LazyColumn {
                             items(stitchRowsState) { row ->
-                                Text(text = "Row ${row.rowNumber}: ${row.instructions} (${row.stitches} stitches)")
+                                Text(text = stringResource(id = R.string.row) + " ${row.rowNumber}: ${row.instructions} (${row.stitches} "
+                                + stringResource(id = R.string.row_stitches) + ")")
                             }
                         } ?: run {
                             Text(text = "Loading stitch rows...")
@@ -144,7 +146,7 @@ fun RecipeDetailsScreen(
                             shape = RoundedCornerShape(8.dp)
 
                         ) {
-                            Text("Add New Project")
+                            Text(text = stringResource(id = R.string.project_add_new))
                         }
                         Spacer(modifier = Modifier.weight(1f))
                         Button(
@@ -164,9 +166,8 @@ fun RecipeDetailsScreen(
                             colors = ButtonDefaults.buttonColors(Color(0xFFFF84CE)),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text("Delete Recipe")
+                            Text(text = stringResource(id = R.string.recipe_delete))
                         }
-                        Log.d("RecipeDetailsScreen", "Recipe details: $recipe")
                     }
                 }
             }

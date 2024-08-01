@@ -15,6 +15,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -65,7 +66,7 @@ fun RecipesScreen(
                     .padding(20.dp)
             ) {
                 Text(
-                    text = "Receitas",
+                    text = stringResource(id = R.string.recipe_list),
                     modifier = Modifier.padding(top = 25.dp, bottom = 15.dp, start = 30.dp),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontFamily = customFont,
@@ -124,7 +125,7 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
             Row {
                 Text(
-                    text = "Dificuldade: ",
+                    text = stringResource(id = R.string.difficulty) + ": ",
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                 )
                 Text(

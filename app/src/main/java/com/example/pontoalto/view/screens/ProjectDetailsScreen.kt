@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -85,14 +86,14 @@ fun ProjectDetailsScreen(
                         .padding(10.dp)
                 ) {
                     Text(
-                        text = "Project Name: ${projectState.projectName}",
+                        text = stringResource(id = R.string.project_name) + ": ${projectState.projectName}",
                         fontFamily = customFont,
                         fontSize = 24.sp,
                         color = Color(0xFFFF84CE)
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = "Recipe Name: ${projectState.recipeName}",
+                        text = stringResource(id = R.string.recipe_name) + ": ${projectState.recipeName}",
                         fontFamily = customFont,
                         fontSize = 18.sp,
                         color = Color(0xFFFF84CE)
@@ -110,7 +111,7 @@ fun ProjectDetailsScreen(
                     } + 1
 
                     Text(
-                        text = "Stitch Rows:",
+                        text = stringResource(id = R.string.row_stitch),
                         fontSize = 20.sp,
                         color = Color(0xFF5941A9)
                     )
@@ -121,7 +122,8 @@ fun ProjectDetailsScreen(
                             val isRowDone = currentRow == row.rowNumber
                             val textColor = if (isRowDone) Color(0xFFFF84CE) else Color.Black
                             Text(
-                                text = "Row ${row.rowNumber}: ${row.instructions} (${row.stitches} stitches)",
+                                text = stringResource(id = R.string.row) + " ${row.rowNumber}: ${row.instructions} (${row.stitches} "
+                                + stringResource(id = R.string.row_stitches) + ")",
                                 color = textColor
                             )
                         }
@@ -135,7 +137,7 @@ fun ProjectDetailsScreen(
                         verticalArrangement = Arrangement.Bottom
                     ) {
                         Text(
-                            text = "Current Stitch:",
+                            text = stringResource(id = R.string.row_stitch_current),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontWeight = FontWeight.Normal,
                                 fontSize = 20.sp
@@ -207,10 +209,12 @@ fun ProjectDetailsScreen(
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(Color(0xFFFF84CE)),
-                            modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                                .fillMaxWidth(),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text(text = "End Project", color = Color.White)
+                            Text(text = stringResource(id = R.string.project_end), color = Color.White)
                         }
                     }
 
