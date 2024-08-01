@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">PontoAlto</string>
+    <string name="difficulty">Dificuldade</string>
+    <string name="difficulty_advanced">Avançado</string>
+    <string name="difficulty_basic">Básico</string>
+    <string name="difficulty_intermediate">Intermediário</string>
+    <string name="difficulty_unknown">Desconhecida</string>
+    <string name="project_add_new">Adicionar Projeto Novo</string>
+    <string name="project_current">Projetos Atuais</string>
+    <string name="project_end">Terminar Projeto</string>
+    <string name="project_name">Nome do Projeto</string>
+    <string name="project_new">Novo Projeto</string>
+    <string name="project_save">Salvar Projeto</string>
+    <string name="recipe">Receita</string>
+    <string name="recipe_delete">Deletar Receita</string>
+    <string name="recipe_list">Receitas</string>
+    <string name="recipe_name">Nome da Receita</string>
+    <string name="recipe_new">Nova Receita</string>
+    <string name="recipe_save">Salvar Receita</string>
+    <string name="row">Linha</string>
+    <string name="row_add">Adicionar Linha</string>
+    <string name="row_instruction">Instruções da Linha</string>
+    <string name="row_placeholder">Junte 7</string>
+    <string name="row_stitch">Linhas dos Pontos</string>
+    <string name="row_stitches">Pontos</string>
+    <string name="row_stitch_amount">Número de Pontos</string>
+    <string name="row_stitch_current">Ponto Atual</string>
+</resources>

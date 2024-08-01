@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PontoAlto</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="difficulty_advanced">Advanced</string>
+    <string name="difficulty_basic">Basic</string>
+    <string name="difficulty_intermediate">Intermediate</string>
+    <string name="difficulty_unknown">Unknown</string>
+    <string name="project_add_new">Add New Project</string>
+    <string name="project_current">Current Projects</string>
+    <string name="project_end">End Project</string>
+    <string name="project_name">Project Name</string>
+    <string name="project_new">New Project</string>
+    <string name="project_save">Save Project</string>
+    <string name="recipe">Recipe</string>
+    <string name="recipe_delete">Delete Recipe</string>
+    <string name="recipe_list">Recipes</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="recipe_new">New Recipe</string>
+    <string name="recipe_save">Save Recipe</string>
+    <string name="row">Row</string>
+    <string name="row_add">Add Row</string>
+    <string name="row_instruction">Row Instructions</string>
+    <string name="row_placeholder">Chain 7</string>
+    <string name="row_stitch">Stitch Rows</string>
+    <string name="row_stitches">Stitches</string>
+    <string name="row_stitch_amount">Number of Stitches</string>
+    <string name="row_stitch_current">Current Stitch</string>
+</resources>
