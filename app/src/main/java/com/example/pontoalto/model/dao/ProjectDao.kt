@@ -22,5 +22,11 @@ interface ProjectDao {
     @Update
     suspend fun updateProject(project: Project)
 
+    @Query("SELECT * FROM projects WHERE projectName = :name LIMIT 1")
+    suspend fun getProjectByName(name: String): Project
+
+    @Query("UPDATE projects SET currentStitch = :newCount WHERE projectName = :projectName")
+    suspend fun updateCurrentStitch(projectName: String, newCount: Int)
+
 }
 

@@ -48,12 +48,18 @@ import com.example.pontoalto.model.repository.ProjectRepository
 import com.example.pontoalto.model.repository.RecipeRepository
 import com.example.pontoalto.model.repository.StitchRowRepository
 import com.example.pontoalto.view.screens.HomeScreen
+import com.example.pontoalto.view.screens.NewProjectScreen
 import com.example.pontoalto.view.screens.NewRecipeScreen
+import com.example.pontoalto.view.screens.ProjectDetailsScreen
 import com.example.pontoalto.view.screens.RecipeDetailsScreen
 import com.example.pontoalto.view.screens.RecipesScreen
+import com.example.pontoalto.viewmodel.NewProjectViewModel
+import com.example.pontoalto.viewmodel.NewProjectViewModelFactory
 import com.example.pontoalto.viewmodel.NewRecipeViewModel
 import com.example.pontoalto.viewmodel.NewRecipeViewModelFactory
 import com.example.pontoalto.viewmodel.NewStitchRowViewModel
+import com.example.pontoalto.viewmodel.ProjectDetailsViewModel
+import com.example.pontoalto.viewmodel.ProjectDetailsViewModelFactory
 import com.example.pontoalto.viewmodel.ProjectViewModel
 import com.example.pontoalto.viewmodel.ProjectViewModelFactory
 import com.example.pontoalto.viewmodel.RecipeDetailsViewModel
@@ -92,6 +98,7 @@ fun PontoAlto() {
     val newRecipeViewModel: NewRecipeViewModel = viewModel(factory = factory)
     val newStitchRowViewModel: NewStitchRowViewModel = viewModel(factory = StitchRowViewModelFactory(stitchRowRepository))
     val projectViewModel: ProjectViewModel = viewModel(factory = ProjectViewModelFactory(projectRepository))
+    val newProjectViewModel: NewProjectViewModel = viewModel(factory = NewProjectViewModelFactory(projectRepository))
     val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel(factory = RecipeViewModelFactory(recipeRepository))
     val stitchRowViewModel: StitchRowViewModel = viewModel(factory = StitchRowsViewModelFactory(stitchRowRepository))
 
@@ -121,6 +128,33 @@ fun PontoAlto() {
                 navController = navController,
                 recipeName = recipeName,
                 recipeViewModel = recipeDetailsViewModel,
+                stitchRowViewModel = stitchRowViewModel
+            )
+        }
+        composable("new-project/{recipeName}", ) { backStackEntry ->
+            val recipeName = backStackEntry.arguments?.getString("recipeName") ?: ""
+
+            NewProjectScreen(
+                navController = navController,
+                newProjectViewModel = newProjectViewModel,
+                recipeName = recipeName
+            )
+        }
+        composable(
+            route = "project-details/{projectName}",
+            arguments = listOf(navArgument("projectName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val projectName = backStackEntry.arguments?.getString("projectName") ?: ""
+            val viewModel: ProjectDetailsViewModel = viewModel(
+                factory = ProjectDetailsViewModelFactory(
+                    projectName = projectName,
+                    projectRepository = projectRepository
+                )
+            )
+            ProjectDetailsScreen(
+                navController = navController,
+                projectName = projectName,
+                projectViewModel = viewModel,
                 stitchRowViewModel = stitchRowViewModel
             )
         }

@@ -10,6 +10,6 @@ import androidx.room.Relation
 data class Project(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val projectName: String,
-    val recipeId: Int,
+    val recipeName: String,
     val currentStitch: Int
 )

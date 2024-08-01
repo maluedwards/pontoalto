@@ -73,65 +73,58 @@ fun RecipeDetailsScreen(
     }
 
     PontoAltoTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(gradient)
-        ) {
-            Scaffold(
-                modifier = Modifier.fillMaxSize(),
-                topBar = { MyHeader() },
-                bottomBar = {
-                    MyNavBar(
-                        listRecipes = false,
-                        home = true,
-                        newRecipe = false,
-                        navController
-                    )
-                },
-                containerColor = Color.Transparent
-            )
-            { innerPadding ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = { MyHeader() },
+            bottomBar = { MyNavBar(listRecipes = false, home = true, newRecipe = false, navController) },
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
+        { innerPadding ->
 
-                ElevatedCard(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .padding(20.dp)
-                ) {
-                    Column {
-                        recipe?.let {
-                            Text(text = "Recipe Name: ${it.recipe.recipeName}")
-                            Text(text = "Difficulty: ${it.recipe.difficulty}")
-                        }
-
-                        Text(text = "Stitch Rows:")
-                        LazyColumn {
-                            items(stitchRowsState) { row ->
-                                Text(text = "Row ${row.rowNumber}: ${row.instructions} (${row.stitches} stitches)")
-                            }
-                        } ?: run {
-                            Text(text = "Loading stitch rows...")
-                        }
-
-                        Button(
-                            onClick = {
-                                Log.d(
-                                    "RecipeDetailsScreen",
-                                    "Deleting recipe: ${recipe?.recipe?.recipeName}"
-                                )
-                                recipeViewModel.deleteRecipe(recipe?.recipe?.recipeName ?: "")
-                                navController.navigate("recipes") {
-                                    popUpTo("recipe-detail") { inclusive = true }
-                                }
-                            },
-                            modifier = Modifier.padding(top = 16.dp)
-                        ) {
-                            Text("Delete Recipe")
-                        }
-                        Log.d("RecipeDetailsScreen", "Recipe details: $recipe")
+            ElevatedCard(
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(20.dp)
+            ) {
+                Column {
+                    recipe?.let {
+                        Text(text = "Recipe Name: ${it.recipe.recipeName}")
+                        Text(text = "Difficulty: ${it.recipe.difficulty}")
                     }
+
+                    Text(text = "Stitch Rows:")
+                    LazyColumn {
+                        items(stitchRowsState) { row ->
+                            Text(text = "Row ${row.rowNumber}: ${row.instructions} (${row.stitches} stitches)")
+                        }
+                    } ?: run {
+                        Text(text = "Loading stitch rows...")
+                    }
+
+                    Button(
+                        onClick = {
+                            navController.navigate("new-project/${recipeName}")
+                        },
+                        modifier = Modifier.padding(top = 16.dp)
+                    ) {
+                        Text("Add New Project")
+                    }
+
+                    Button(
+                        onClick = {
+                            Log.d("RecipeDetailsScreen", "Deleting recipe: ${recipe?.recipe?.recipeName}")
+                            recipeViewModel.deleteRecipe(recipe?.recipe?.recipeName ?: "")
+                            navController.navigate("recipes") {
+                                popUpTo("recipe-detail") { inclusive = true }
+                            }
+                        },
+                        modifier = Modifier.padding(top = 16.dp)
+                    ) {
+                        Text("Delete Recipe")
+                    }
+                    Log.d("RecipeDetailsScreen", "Recipe details: $recipe")
                 }
             }
         }
