@@ -2,7 +2,7 @@
 
 package com.example.pontoalto.view.screens
 
-
+import com.example.pontoalto.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.pontoalto.MyHeader
 import com.example.pontoalto.MyNavBar
-import com.example.pontoalto.R
 import com.example.pontoalto.model.entity.Project
 import com.example.pontoalto.model.entity.Recipe
 import com.example.pontoalto.ui.theme.PontoAltoTheme
@@ -48,11 +47,14 @@ fun HomeScreen(navController: NavHostController, projectViewModel: ProjectViewMo
     )
 
     PontoAltoTheme {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(gradient)) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = { MyHeader() },
             bottomBar = { MyNavBar( listRecipes = false, home = true, newRecipe = false, navController) },
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = Color.Transparent
         )
         { innerPadding ->
 
@@ -63,9 +65,15 @@ fun HomeScreen(navController: NavHostController, projectViewModel: ProjectViewMo
                     .padding(innerPadding)
                     .padding(20.dp)
             ) {
-                Text(text = "Current Projects",
-                    modifier = Modifier.padding(15.dp),
-                    style = MaterialTheme.typography.titleLarge)
+                Text(
+                    text = "Projetos atuais",
+                    modifier = Modifier.padding(30.dp),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontFamily = customFont,
+                        fontSize = 24.sp,
+                        color = Color(0xFFFF84CE)
+                    )
+                )
                 LazyColumn(
                     Modifier
                         .fillMaxSize()
@@ -83,6 +91,7 @@ fun HomeScreen(navController: NavHostController, projectViewModel: ProjectViewMo
                 }
             }
         }
+        }
     }
 }
 
@@ -93,11 +102,17 @@ fun ProjectCard(project: Project, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick)
     ) {
-        Column(modifier = Modifier.padding(10.dp)) {
-            Text(text = project.projectName, style = MaterialTheme.typography.titleMedium)
-            Text(text = "Recipe: ${project.recipeName}", style = MaterialTheme.typography.bodyMedium)
+        Column(modifier = Modifier.padding(vertical = 5.dp, horizontal = 30.dp)) {
+            Text(
+                text = project.projectName,
+                style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Receita: ${project.recipeName}",
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+            )
         }
-
     }
 }
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.pontoalto.MyHeader
 import com.example.pontoalto.MyNavBar
@@ -64,9 +65,13 @@ fun RecipesScreen(
                     .padding(20.dp)
             ) {
                 Text(
-                    text = "Recipes",
-                    modifier = Modifier.padding(15.dp),
-                    style = MaterialTheme.typography.titleLarge
+                    text = "Receitas",
+                    modifier = Modifier.padding(top = 25.dp, bottom = 15.dp, start = 30.dp),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontFamily = customFont,
+                        fontSize = 24.sp,
+                        color = Color(0xFFFF84CE)
+                    )
                 )
                 HorizontalDivider()
                 LazyColumn(
@@ -89,17 +94,47 @@ fun RecipesScreen(
     }
 }
 
+object DifficultyMapper {
+    private val difficultyMap = mapOf(
+        1 to "Baixa",
+        2 to "Média",
+        3 to "Alta"
+    )
+
+    fun getDifficultyText(difficulty: Int): String {
+        return difficultyMap[difficulty] ?: "Desconhecida"
+    }
+}
+
+
 @Composable
 fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
+    val difficultyText = DifficultyMapper.getDifficultyText(recipe.difficulty)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
     ) {
-        Column(modifier = Modifier.padding(10.dp)) {
-            Text(text = recipe.recipeName, style = MaterialTheme.typography.titleMedium)
-            Text(text = "Difficulty: ${recipe.difficulty}", style = MaterialTheme.typography.bodyMedium)
+        Column(modifier = Modifier.padding(vertical = 10.dp, horizontal = 30.dp)) {
+            Text(
+                text = recipe.recipeName,
+                style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row {
+                Text(
+                    text = "Dificuldade: ",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                )
+                Text(
+                    text = difficultyText,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                )
+            }
         }
-
     }
 }
