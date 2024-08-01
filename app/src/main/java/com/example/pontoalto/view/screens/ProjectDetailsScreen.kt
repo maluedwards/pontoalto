@@ -1,6 +1,7 @@
 package com.example.pontoalto.view.screens
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -42,6 +45,14 @@ fun ProjectDetailsScreen(
     val projectState by projectViewModel.uiState.collectAsState()
     val stitchRowsState by stitchRowViewModel.stitchRows.collectAsState()
 
+    val gradient = Brush.linearGradient(
+        0.1f to Color(0xFFB685E8),
+        0.1f to Color(0xFFB685E8),
+        1.0f to Color(0xFFFFFFFF),
+        start = Offset(0f, 0f),
+        end = Offset(0f, Float.POSITIVE_INFINITY)
+    )
+
     val customFont = FontFamily(
         Font(R.font.poetsen_one, FontWeight.Normal)
     )
@@ -52,11 +63,14 @@ fun ProjectDetailsScreen(
     }
 
     PontoAltoTheme {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(gradient)) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = { MyHeader() },
             bottomBar = { MyNavBar(listRecipes = false, home = false, newRecipe = false, navController) },
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = Color.Transparent
         ) { innerPadding ->
             ElevatedCard(
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
@@ -70,13 +84,15 @@ fun ProjectDetailsScreen(
                         .fillMaxSize()
                         .padding(10.dp)
                 ) {
-                    Text(text = "Project Name: ${projectState.projectName}",
+                    Text(
+                        text = "Project Name: ${projectState.projectName}",
                         fontFamily = customFont,
                         fontSize = 24.sp,
                         color = Color(0xFFFF84CE)
-                        )
+                    )
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text(text = "Recipe Name: ${projectState.recipeName}",
+                    Text(
+                        text = "Recipe Name: ${projectState.recipeName}",
                         fontFamily = customFont,
                         fontSize = 18.sp,
                         color = Color(0xFFFF84CE)
@@ -86,22 +102,23 @@ fun ProjectDetailsScreen(
                     Spacer(modifier = Modifier.height(10.dp))
 
 
-
                     val currentRow = stitchRowsState.indexOfFirst { row ->
-                        val rowEnd = row.stitches + stitchRowsState.takeWhile { it.rowNumber < row.rowNumber }
-                            .sumOf { it.stitches }
+                        val rowEnd =
+                            row.stitches + stitchRowsState.takeWhile { it.rowNumber < row.rowNumber }
+                                .sumOf { it.stitches }
                         projectState.currentStitch <= rowEnd
-                    } +1
+                    } + 1
 
-                    Text(text = "Stitch Rows:",
+                    Text(
+                        text = "Stitch Rows:",
                         fontSize = 20.sp,
                         color = Color(0xFF5941A9)
                     )
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    LazyColumn (modifier = Modifier.padding(10.dp)){
+                    LazyColumn(modifier = Modifier.padding(10.dp)) {
                         items(stitchRowsState) { row ->
-                            val isRowDone = currentRow==row.rowNumber
+                            val isRowDone = currentRow == row.rowNumber
                             val textColor = if (isRowDone) Color(0xFFFF84CE) else Color.Black
                             Text(
                                 text = "Row ${row.rowNumber}: ${row.instructions} (${row.stitches} stitches)",
@@ -110,24 +127,29 @@ fun ProjectDetailsScreen(
                         }
                     }
 
-                    Column (modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp),
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Bottom
-                    ){
-                        Text(text = "Current Stitch:",
+                    ) {
+                        Text(
+                            text = "Current Stitch:",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontWeight = FontWeight.Normal,
-                                fontSize = 20.sp),
+                                fontSize = 20.sp
+                            ),
                             fontFamily = customFont,
                             color = Color(0xFF5941A9)
                         )
                         Spacer(modifier = Modifier.height(10.dp))
-                        Text(text = "${projectState.currentStitch}",
+                        Text(
+                            text = "${projectState.currentStitch}",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 30.sp)
+                                fontSize = 30.sp
+                            )
                         )
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -135,27 +157,45 @@ fun ProjectDetailsScreen(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.Bottom
                         ) {
-                            Button(onClick = { projectViewModel.onEvent(ProjectDetailsUiEvent.DecrementStitch(1)) },
+                            Button(
+                                onClick = {
+                                    projectViewModel.onEvent(
+                                        ProjectDetailsUiEvent.DecrementStitch(
+                                            1
+                                        )
+                                    )
+                                },
                                 colors = ButtonDefaults.buttonColors(Color(0xFFB685E8)),
                                 shape = RoundedCornerShape(8.dp)
-                                ) {
-                                Text(text = "-",
+                            ) {
+                                Text(
+                                    text = "-",
                                     style = MaterialTheme.typography.bodyMedium.copy(
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 30.sp)
+                                        fontSize = 30.sp
                                     )
+                                )
                             }
                             Spacer(modifier = Modifier.width(16.dp))
-                            Button(onClick = { projectViewModel.onEvent(ProjectDetailsUiEvent.IncrementStitch(1))},
-                                colors = ButtonDefaults.buttonColors(Color(0xFFB685E8)) ,
+                            Button(
+                                onClick = {
+                                    projectViewModel.onEvent(
+                                        ProjectDetailsUiEvent.IncrementStitch(
+                                            1
+                                        )
+                                    )
+                                },
+                                colors = ButtonDefaults.buttonColors(Color(0xFFB685E8)),
                                 shape = RoundedCornerShape(8.dp)
 
                             ) {
-                                Text(text = "+",
+                                Text(
+                                    text = "+",
                                     style = MaterialTheme.typography.bodyMedium.copy(
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 29.sp)
+                                        fontSize = 29.sp
                                     )
+                                )
                             }
                         }
                         Button(
@@ -174,7 +214,7 @@ fun ProjectDetailsScreen(
                         }
                     }
 
-
+                }
                 }
             }
         }
