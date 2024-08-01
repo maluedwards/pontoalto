@@ -90,12 +90,19 @@ class ProjectDetailsViewModel(
         when (event) {
             is ProjectDetailsUiEvent.IncrementStitch -> {
                 updateStitchCount(_uiState.value.currentStitch + event.amount)
+                loadProjectDetails()
             }
             is ProjectDetailsUiEvent.DecrementStitch -> {
                 updateStitchCount(_uiState.value.currentStitch - event.amount)
+                loadProjectDetails()
             }
             is ProjectDetailsUiEvent.LoadProject -> {
                 loadProjectDetails()
+            }
+            is ProjectDetailsUiEvent.DeleteProject -> {
+                viewModelScope.launch {
+                    projectRepository.deleteProject(_uiState.value.projectName)
+                }
             }
         }
     }
