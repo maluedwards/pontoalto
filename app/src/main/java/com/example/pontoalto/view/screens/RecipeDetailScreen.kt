@@ -6,14 +6,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +31,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.pontoalto.MyHeader
 import com.example.pontoalto.MyNavBar
@@ -82,7 +86,7 @@ fun RecipeDetailsScreen(
                 bottomBar = {
                     MyNavBar(
                         listRecipes = false,
-                        home = true,
+                        home = false,
                         newRecipe = false,
                         navController
                     )
@@ -98,13 +102,26 @@ fun RecipeDetailsScreen(
                         .padding(innerPadding)
                         .padding(20.dp)
                 ) {
-                    Column {
+                    Column (modifier = Modifier.padding(20.dp)){
                         recipe?.let {
-                            Text(text = "Recipe Name: ${it.recipe.recipeName}")
-                            Text(text = "Difficulty: ${it.recipe.difficulty}")
+                            Text(text = "Recipe Name: ${it.recipe.recipeName}",
+                                fontFamily = customFont,
+                                fontSize = 24.sp,
+                                color = Color(0xFFFF84CE))
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(text = "Difficulty: ${it.recipe.difficulty}",
+                                fontFamily = customFont,
+                                fontSize = 18.sp,
+                                color = Color(0xFFFF84CE))
                         }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HorizontalDivider()
+                        Spacer(modifier = Modifier.height(10.dp))
 
-                        Text(text = "Stitch Rows:")
+                        Text(text = "Stitch Rows:",
+                            fontSize = 20.sp,
+                            color = Color(0xFF5941A9))
+                        Spacer(modifier = Modifier.height(10.dp))
                         LazyColumn {
                             items(stitchRowsState) { row ->
                                 Text(text = "Row ${row.rowNumber}: ${row.instructions} (${row.stitches} stitches)")
@@ -117,7 +134,12 @@ fun RecipeDetailsScreen(
                             onClick = {
                                 navController.navigate("new-project/${recipeName}")
                             },
-                            modifier = Modifier.padding(top = 16.dp)
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(Color(0xFFFF84CE)),
+                            shape = RoundedCornerShape(8.dp)
+
                         ) {
                             Text("Add New Project")
                         }
@@ -133,7 +155,11 @@ fun RecipeDetailsScreen(
                                     popUpTo("recipe-detail") { inclusive = true }
                                 }
                             },
-                            modifier = Modifier.padding(top = 16.dp)
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(Color(0xFFFF84CE)),
+                            shape = RoundedCornerShape(8.dp)
                         ) {
                             Text("Delete Recipe")
                         }
